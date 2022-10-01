@@ -1,7 +1,7 @@
 // Backup created 10/1/2022
 // Attached to spreadsheet at https://docs.google.com/spreadsheets/d/1M8JiQk6AR2oh3mi-EQ6Mf3GzM9q1C3x4tcpbvQNMn0E/edit?usp=sharing
 
-// Madison Micklas 9-27-2022
+// Madison Micklas 9-30-2022
 
 //================================================================================
 // Part 1: Summary
@@ -21,11 +21,11 @@
 // one open to the pixel art to get real-time feedback. On the pixel art page, choose the
 // desired jersey from the dropdown (you may have to create a row for it in the color table first).
 // Depending on the settings in "Part 2" of this code, as you work, a preview should eventually generate.
-// It's mighty slow, ESPECIALLY on mobile, but in my tests it has indeed worked on mobile.
+// It takes a moment, especially on mobile, but in my tests it has indeed worked on mobile.
 
 // As you edit the color table, depending on your settings in "Part 2" of this code,
 // cells may change their background color to match the hex code they contain.
-// This is handy for double-checking the right color copied over correctly.
+// This is handy for double-checking that the right color copied over correctly.
 
 // If you don't know what color goes where, note that in the pixel art, each individual "pixel"
 // contains a little tiny number indicating what color slot it's using.
@@ -49,14 +49,14 @@ const RecolorTrigger = {
 
 const currentRecolorTrigger = RecolorTrigger.AnyEdit;
 
-// TODO
+// Note: These aren't as relevant now that my code is much faster :p
 // Will the spreadsheet calculate colors for every single cell (very slow), or only a specific area?
 const RecolorRange = {
   All: 1,
-  OnlyPictureAndColorTable: 2, // TODO // Recommended for most uses
+  OnlyPictureAndColorTable: 2, // Recommended for most uses
   OnlyPicture: 3, // Just the pixel art of the jersey
-  OnlyColorTable: 4, // TODO // Saves some resources if you don't need the pixel art
-  OnlyRecentlyEditedCell: 5 // TODO
+  OnlyColorTable: 4, // Saves some resources if you don't need the pixel art
+  OnlyRecentlyEditedCell: 5 // Ultimate resource saving mode, but might skip some cells if you change lots of things really fast
 }
 
 const currentRecolorRange = RecolorRange.All;
@@ -100,7 +100,7 @@ function didJerseyDropdownChange(e) {
 // Confirmed relevant:
 
 const jerseyDropdownSheetName = "Pixel Art";
-const jerseyDropdownRange = "A4:M4"; // If you've merged multiple cells together, this (maybe?) needs to be the entire merged range, not just the first cell
+const jerseyDropdownRange = "A4:T4"; // If you've merged multiple cells together, this (maybe?) needs to be the entire merged range, not just the first cell
 const jerseyDropdownFirstCell = "A4"; // this is gross but idc right this second
 
 const messageBoxSheetName = "Pixel Art";
@@ -111,43 +111,35 @@ const pixelArtRange = "A9:AF100"; // Might not need to be set in stone anymore, 
 
 const colorTableSheetName = "Color Table";
 
-// Todo: Not sure if confirmed relevant
-// also todo name these better
+const backgroundColorPickerSheetName = "Pixel Art";
+const backgroundColorPickerRange = "X4:AD4";
 
 const jerseyListRange = "C1:C200"; // The range (just one column) containing possible jersey names - will be used to populate the dropdown that the user will use to select a jersey
 
-const colorTableRange = "D1:Z200"; // todo that's not quite right
-const colorTableStartingRow = "D1"; // (^ same)
-const colorTableEndingRow = "Z"; // could be calculated using numberOfColorsInPalette but let's just get this running
+// Beware: Some of these have weird names or are obsolete
+// (this script has come a long way)
 
+// I don't like how spaghetti this is, but tbh, who is ever going to read this
+const colorTableRange = "C1:V200";
+const colorTableStartingCol = "C"; // (^ same)
+const colorTableEndingCol = "V"; // could be calculated using numberOfColorsInPalette but let's just get this running
+const colorTableNamesRow = "1";
 
-const colorSlotListRange = "AK1:AZ1"; // todo that is not the correct size lol
-//const debugCell = "U21";
-const numberOfColorsInPalette = 15;
+let backgroundColorDisplayValue;
 
 function sendToMessageBox(msg) {
   let messageBoxSheet = SpreadsheetApp.getActive().getSheetByName(messageBoxSheetName);
   messageBoxSheet.getRange(messageBoxCell).setValue(msg) 
 }
 
-// TODO: Rearrange the spreadsheet and then inform this code of the new locations of everything
-// TODO: Cleanup
-// TODO: Optimization
 function recolorVarious(e) {
-  // Maddie 2022-09-16
-
-  // TODO WIP
+  // Maddie 9-30-2022
 
   let active = SpreadsheetApp.getActive();
   let pixelArtSheet = active.getSheetByName(pixelArtSheetName);
   let jerseyDropdownSheet = active.getSheetByName(jerseyDropdownSheetName);
   let colorTableSheet = active.getSheetByName(colorTableSheetName);
-
-  /* if(pixelArtSheet == null) {
-    // TODO: Make error more visible
-    Logger.log("Error! Pixel art sheet not found. Make sure const pixelArtSheetName is correct in the code.");
-    return;
-  } */
+  let backgroundColorPickerSheet = active.getSheetByName(backgroundColorPickerSheetName);
 
   // Find which team the user has selected in the dropdown (may be "" in weird cases)
   let selectedJersey = jerseyDropdownSheet.getRange(jerseyDropdownRange).getDisplayValue();
@@ -159,7 +151,6 @@ function recolorVarious(e) {
 
   // Find which row contains the information for the selected jersey, so we can use it to locate the correct color palette
   let jerseyNames = colorTableSheet.getRange(jerseyListRange).getValues();
-  // TODO
   let colorPaletteRow;
   // vv todo: starting with 1 is weird but i think it's necessary
   for(let i = 1; i < jerseyNames.length; i++) {
@@ -171,11 +162,14 @@ function recolorVarious(e) {
     }
   }
 
+  backgroundColorDisplayValue = backgroundColorPickerSheet.getRange(backgroundColorPickerRange).getDisplayValue();
+
   // Create and populate our color palette with the one that matches the selected team
-  let colorPaletteRange = colorTableStartingRow + colorPaletteRow + ":" + colorTableEndingRow + colorPaletteRow;
+  let colorPaletteRange = colorTableStartingCol + colorPaletteRow + ":" + colorTableEndingCol + colorPaletteRow;
   //Logger.log("colorPaletteRange == " + colorPaletteRange);
   let selectedColorPalette = colorTableSheet.getRange(colorPaletteRange).getValues();
-
+  //Logger.log("color palette length: " + selectedColorPalette[0].length);
+  
   // Depending on the settings in "Part 2" of this code, we might be recoloring multiple ranges
   // in the spreadsheet. So let's decide what those ranges are.
   let rangesToRecolor = [];
@@ -231,28 +225,29 @@ function recolorVarious(e) {
   }
 
   sendToMessageBox("Preview generation complete.");
-
 }
 
 function chooseColor(str, colorPalette) {
-  // If the cell contains an integer, then use that as an index and pull the color from our
-  // current palette.
 
+  // If the cell contains an integer, then we'll use that as an index and pull the color
+  // from colorPalette[].
   let strAsInt = parseInt(str);
-  if(!isNaN(strAsInt) && isFinite(str) && (strAsInt > 0)) {
 
-    //Logger.log (strAsInt <= colorPalette[0].length);
-
-    // TODO, Blah blah something confusing about zero indexing because I include the jersey name as the 0th entry in the color palette  
-
-    return colorPalette[0][strAsInt-1];
+  // todo: the colorPalette[0].length thing is gross but also who cares
+  if(isNaN(strAsInt) || !isFinite(strAsInt) || (strAsInt >= colorPalette[0].length)) {
+    // This cell must not be part of the pixel art, since it doesn't have the right syntax
+    // or would result in an out of range error.
+    // The cell might have a hex code or some other kind of valid color in it, or it might not.
+    // So, let's just return the string as-is and let setBackgrounds() decide what to do.
+    return(str);
   }
 
-  // If we made it this far, the cell might have a hex code or some other kind of valid color in it.
-  // (We'll be using setBackgrounds(), which will be happy with any color in CSS notation.)
-  // From what I can tell, if it doesn't contain a valid color, that will work out ok too -
-  // that will just reset the background color(?) (citation needed)
-  // So, let's just return the string as-is and let setBackgrounds() decide what to do.
-
-  return(str);
+  if(strAsInt == 0) {
+    // That's our signal to use the special background color.
+    return backgroundColorDisplayValue;
+  }
+  
+  // If we've made it this far, we must have an integer that works as a valid index
+  // todo I don't like this weird index thing
+  return colorPalette[0][strAsInt];
 }
