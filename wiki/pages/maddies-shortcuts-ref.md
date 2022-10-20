@@ -1,5 +1,3 @@
-{\rtf1}
-
 ## VSCode
 
 Markdown preview:
