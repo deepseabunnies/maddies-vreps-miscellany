@@ -25,13 +25,13 @@ A collection of reference info for Maddie and other 3D-adjacent people.
 
 ### Misc
 
-- [shortcuts (does this link work?)](/pages/maddies-shortcuts-ref.md)
+- [shortcuts (does this link work?)](pages/maddies-shortcuts-ref.md)
 
 ### Blender topics:
 
-- [Blender version and settings](/pages/blender-settings.md)
+- [Blender version and settings](pages/blender-settings.md)
 
-- (WIP) [File types, import, and export](/pages/blender-import-and-export.md)
+- (WIP) [File types, import, and export](pages/blender-import-and-export.md)
 
 <br>
 
