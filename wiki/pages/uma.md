@@ -24,4 +24,4 @@ Downloads: 5/11/2021: I stored these on the VReps drive [here](https://drive.goo
 
 ### Jaw hanging open fix
 - Workaround to make UMA characters close their mouths for most animations
-- [Secret Anorak explanation](https://youtu.be/9ii5tsOwx1w?t=588\) 
+- [Secret Anorak explanation](https://youtu.be/9ii5tsOwx1w?t=588) 

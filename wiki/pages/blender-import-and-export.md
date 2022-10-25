@@ -14,6 +14,6 @@ Otherwise, the export will include extra bones (you'll notice they go by an "_en
 ![](images/leaf-bones-5.png)
 ![](images/leaf-bones-6.png)
 
-[Here's](blender-ignore-leaf-bones) a detailed explanation if you want!
+[Here's](blender-ignore-leaf-bones.md) a detailed explanation if you want!
 
 ---
