@@ -21,11 +21,21 @@ A collection of reference info for Maddie and other 3D-adjacent people.
 
 - [shortcuts (does this link work?)](pages/maddies-shortcuts-ref.md)
 
+### Unity topics:
+
+- [UMA](pages/uma.md)
+  - [Utility recipes to consider](pages/uma.md#utility-recipes-i-recommend-downloads)
+
 ### Blender topics:
 
 - [Blender version and settings](pages/blender-settings.md)
 
-- (WIP) [File types, import, and export](pages/blender-import-and-export.md)
+- (wip) [File types, import, and export](pages/blender-import-and-export.md)
+  - ["Ignore leaf bones"](pages/blender-import-and-export.md#ignore-leaf-bones)
+    - [(extra reading)](pages/blender-ignore-leaf-bones.md)
+
+- (wip) [Decimation](pages/blender-decimation.md)
+  - [Decimate without losing shape keys?](pages/blender-decimation.md#decimate-without-losing-shape-keys)
 
 
 ---
